@@ -13,9 +13,22 @@ name: Build OpenWrt
 on:
   repository_dispatch:
   workflow_dispatch:
+    inputs:
+      ssh:
+        description: '[ssh-actions]改成[ssh],再按[Run workflow]按钮启动,则开启SSH连接配置固件'
+        required: false
+        default: 'ssh-actions'
+      days:
+        description: '清理[X]天之前的Actions空间操作记录(可改)'
+        required: true
+        default: '7'
+      rele:
+        description: '保留[X]个Releases不被删除(可改)'
+        required: true
+        default: '10'
 
-  schedule:
-    - cron: 0 16 4,9,14,19,24,30 * *
+ # schedule:
+ #   - cron: 0 16 4,9,14,19,24,30 * *
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
@@ -92,7 +105,7 @@ jobs:
 
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false'))
       env:
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
